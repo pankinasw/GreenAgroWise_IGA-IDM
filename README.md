@@ -28,14 +28,17 @@ graph TD
 ```
 
 ### Technology Stack
-Component,Technology,Purpose
-IGA Engine,Evolveum midPoint 4.8,"Roles, SoD, recertification, connectors"
-Identity Provider,Authentik 2025,"Authentication, OIDC/SAML, MFA"
-Workflow Orchestrator,Temporal.io 1.25,"Long-running approval workflows, escalations"
-Frontend,React 18 + TypeScript + MUI,Self-service portal (PWA)
-Backend,Go 1.23 + Python 3.12,Business logic & custom integrations
-Database,PostgreSQL 16,Primary data storage
-Containerization,Docker Compose (K8s-ready),Local & production deployment
+| Component           | Technology                   | Purpose                                                         |
+|---------------------|------------------------------|-----------------------------------------------------------------|
+| IGA Engine          | Evolveum midPoint 4.8        | Roles, SoD, recertification, connectors                         |
+| Identity Provider   | Authentik 2025               | Authentication, OIDC/SAML, MFA                                  |
+| Workflow Orchestrator | Temporal.io 1.25            | Long-running approval workflows                                 |
+| Frontend            | React 18 + TypeScript + MUI   | Self-service portal (PWA)                                        |
+| Backend             | Go 1.23 + Python 3.12         | Business logic & custom integrations                            |
+| Database            | PostgreSQL 16                | Primary data storage                                            |
+| Containerization    | Docker Compose (K8s-ready)    | Local & production deployment                                   |
+
+
 
 ### Use Cases
 Automated onboarding with birthright access in < 24 hours
