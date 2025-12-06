@@ -1,59 +1,144 @@
-<mxfile host="app.diagrams.net">
-  <diagram name="GreenAgroWise IGA/IDM Architecture" id="arch-2025">
-    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
+# Архитектура системы СУПД  
+(Система управления правами доступа и учётными записями)  
+Версия 1.0 от 05 декабря 2025 г.
 
-        <!-- User -->
-        <mxCell value="Пользователь&lt;br/&gt;Browser / Mobile PWA" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
-          <mxGeometry x="80" y="300" width="60" height="100" as="geometry"/>
-        </mxCell>
+## 1. Общая логическая архитектура
 
-        <!-- Traefik -->
-        <mxCell value="&lt;b&gt;Traefik&lt;/b&gt;&lt;br/&gt;Ingress + TLS" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#e3f2fd;" vertex="1" parent="1">
-          <mxGeometry x="240" y="320" width="140" height="80" as="geometry"/>
-        </mxCell>
+```
+                         +---------------------+
+                         |    Пользователь     |
+                         | Browser / Mobile PWA|
+                         +----------+----------+
+                                    |
+                                    | HTTPS (TLS 1.3)
+                                    v
+                         +---------------------+
+                         |       Traefik       |
+                         | Ingress Controller  |
+                         | TLS-termination     |
+                         +----------+----------+
+                                    |
+          +-------------------+----+--------------------+-------------------+
+          |                   |                         |                   |
+          | HTTPS            | HTTPS                   | HTTPS             |
+          v                   v                         v                   |
++-----------------+  +-----------------+      +-----------------+        |
+|   Authentik     |  |  React Portal   |      |   Temporal.io   |        |
+| 2025.x (SSO)    |  | Self-service    |      | Workflow Engine |        |
+| OIDC / SAML     |  | PWA             |      | 5-stage approval|        |
+| MFA             |  +-----------------+      +--------+--------+        |
++-----------------+                                 |                   |
+          |                                         |                   |
+          | OIDC                                    | gRPC / REST       |
+          v                                         v                   |
+          +----------------------------------------------+              |
+                            |  midPoint 4.8 (IGA Core)  |              |
+                            | • RBAC / ABAC               |              |
+                            | • SoD engine                 |              |
+                            | • Recertification           |              |
+                            | • Provisioning connectors   |              |
+                            +----------------+-------------+              |
+                                             |                        |
+                                             | REST / SCIM / LDAP     |
+                                             v                        |
+                                 +------------------------------+     |
+                                 |     27 целевых систем        |     |
+                                 | SAP, 1C:ERP, M365, ServiceNow, ФГИС и др. |
+                                 +------------------------------+     |
+                                             ^                        |
+                                             |                        |
+                                 +------------------------------+     |
+                                 |         PostgreSQL 16        |<----+
+                                 | Центральная БД midPoint      |
+                                 +------------------------------+
+```
 
-        <!-- Authentik -->
-        <mxCell value="&lt;b&gt;Authentik 2025&lt;/b&gt;&lt;br/&gt;SSO + MFA + OIDC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5fe;strokeColor=#01579b;" vertex="1" parent="1">
-          <mxGeometry x="460" y="200" width="160" height="100" as="geometry"/>
-        </mxCell>
+## 2. Компоненты системы и их назначение
 
-        <!-- React Portal -->
-        <mxCell value="&lt;b&gt;React Portal&lt;/b&gt;&lt;br/&gt;Self-service (PWA)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e8;strokeColor=#1b5e20;" vertex="1" parent="1">
-          <mxGeometry x="460" y="360" width="160" height="100" as="geometry"/>
-        </mxCell>
+| Компонент               | Технология                | Назначение                                                                 |
+|-------------------------|---------------------------|----------------------------------------------------------------------------|
+| Traefik                 | Traefik latest            | Ingress-контроллер, TLS termination, маршрутизация, rate-limiting          |
+| Authentik 2025.x        | Authentik (open-source)   | SSO, OIDC/OAuth2 provider, MFA (TOTP, WebAuthn), LDAP-proxy                |
+| React Portal            | React 18 + TypeScript + Material-UI | Self-service портал (PWA), запросы доступов, ресертификация, мобильная версия |
+| Temporal.io             | Temporal 1.25+            | Оркестратор долговечных workflow (5-этапное согласование + таймауты + эскалация) |
+| Evolveum midPoint 4.8+  | midPoint (open-source)    | Ядро IGA: справочник пользователей, роли, SoD, ресертификация, коннекторы |
+| PostgreSQL 16           | PostgreSQL 16             | Центральное хранилище всех объектов midPoint и Temporal                   |
+| MinIO (опционально)     | MinIO                     | S3-совместимое хранилище для бэкапов, логов, отчетов                      |
 
-        <!-- Temporal -->
-        <mxCell value="&lt;b&gt;Temporal.io&lt;/b&gt;&lt;br/&gt;5-stage workflow" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;" vertex="1" parent="1">
-          <mxGeometry x="460" y="520" width="160" height="100" as="geometry"/>
-        </mxCell>
+## 3. Потоки данных
 
-        <!-- midPoint -->
-        <mxCell value="&lt;b&gt;midPoint 4.8&lt;/b&gt;&lt;br/&gt;IGA Core + SoD + Recert" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#880e4f;" vertex="1" parent="1">
-          <mxGeometry x="720" y="340" width="180" height="120" as="geometry"/>
-        </mxCell>
+### 3.1. Аутентификация и авторизация
+1. Пользователь → Traefik (HTTPS)
+2. Traefik → Authentik (OIDC login + MFA)
+3. Authentik выдаёт JWT-токен
+4. React Portal и midPoint принимают токен (Bearer)
 
-        <!-- PostgreSQL -->
-        <mxCell value="PostgreSQL 16" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e0e0e0;" vertex="1" parent="1">
-          <mxGeometry x="760" y="520" width="100" height="120" as="geometry"/>
-        </mxCell>
+### 3.2. Создание и согласование заявки
+1. React Portal → Temporal.io (создание workflow)
+2. Temporal запускает активности:
+   - Проверка SoD (вызов midPoint REST API)
+   - Последовательное/параллельное согласование (уведомления → React Portal)
+   - Таймауты и эскалация
+3. После финального одобрения → midPoint (provisioning)
 
-        <!-- Target Systems -->
-        <mxCell value="27 Target Systems&lt;br/&gt;SAP • 1C • M365 • ФГИС • ServiceNow" style="shape=folder;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#4a148c;" vertex="1" parent="1">
-          <mxGeometry x="980" y="340" width="200" height="140" as="geometry"/>
-        </mxCell>
+### 3.3. Провизининг в целевые системы
+- midPoint использует встроенные и кастомные коннекторы:
+  - SCIM 2.0 (M365, SAP, современные SaaS)
+  - REST API
+  - LDAP / AD
+  - CSV (для legacy 1C и ФГИС при отсутствии API)
+- Все операции логируются в PostgreSQL и аудите midPoint
 
-        <!-- Arrows -->
-        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="1" target="2"/>
-        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="2" target="3"/>
-        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="3" target="4"/>
-        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="4" target="5"/>
-        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="5" target="6"/>
-        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="6" target="7"/>
-        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;" edge="1" parent="1" source="6" target="8"/>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+### 3.4. Ресертификация
+- Планировщик midPoint ежеквартально запускает кампании
+- Temporal создаёт workflow для каждого руководителя
+- React Portal отображает задачи → подтверждение/отзыв
+
+## 4. Схема архитектуры (текстовое представление Draw.io)
+
+```
++----------------+     HTTPS     +-----------+     OIDC     +------------+
+|   Браузер /    |------------->|  Traefik  |------------>| Authentik  |
+| Mobile PWA     |             +-----------+             +------------+
++----------------+                   |                        |
+                                     | HTTPS                  | JWT
+                                     v                        v
+                            +-----------------+       +-----------------+
+                            |  React Portal   |<----->|    midPoint     |
+                            |  Self-service   | OIDC  |   IGA Core      |
+                            +-----------------+       +-----------------+
+                                     |                        |
+                                     | REST/gRPC              | REST/SCIM/LDAP
+                                     v                        v
+                            +-----------------+         +-----------------+
+                            |   Temporal.io   |         |  27 Target      |
+                            |  Workflow Engine|         |  Systems        |
+                            +-----------------+         +-----------------+
+                                     ^                        |
+                                     |                        |
+                             PostgreSQL 16 (midPoint + Temporal)
+```
+
+## 5. Развёртывание и эксплуатация
+
+| Среда        | Способ развёртывания               | Примечание                         |
+|--------------|------------------------------------|------------------------------------|
+| Продуктив    | Kubernetes (k3s) + Helm            | Horizontal scaling, zero-downtime  |
+| Тестовая     | Docker Compose                     | Полный стек одной командой        |
+| Локальная    | docker compose up -d               | Для разработчиков и приёмочных тестов |
+
+Все компоненты — только open-source, лицензионные платежи = 0 ₽.
+
+## 6. Ключевые преимущества выбранной архитектуры
+- 100 % open-source стек
+- Горизонтальное масштабирование всех компонентов
+- Надёжный workflow с компенсациями (Temporal)
+- Полноценный IGA-движок (midPoint) с SoD и ресертификацией
+- Современный PWA-интерфейс и мобильное согласование
+- Единая точка входа и TLS-termination (Traefik)
+- Простое развёртывание (docker compose up за < 15 минут)
+
+Утверждаю:  
+Главный архитектор ИТ  
+______________________ / ФИО /  
+«05» декабря 2025 г.
