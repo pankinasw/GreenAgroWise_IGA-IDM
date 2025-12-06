@@ -1,1 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects xmlns="http://midpoint.evolveum.com/xml/ns/public/common/common-3"
+         xmlns:c="http://midpoint.evolveum.com/xml/ns/public/common/common-3"
+         xmlns:org="http://midpoint.evolveum.com/xml/ns/public/common/org-3">
 
+    <!-- Корневая организация -->
+    <org oid="00000000-0000-0000-0000-000000000000">
+        <name>GreenAgroWise Холдинг</name>
+        <displayName>GreenAgroWise</displayName>
+        <orgType>company</orgType>
+    </org>
+
+    <!-- Центральный аппарат и основные блоки -->
+    <org oid="00000000-0000-0000-0000-000000000001" parentOrgRef="00000000-0000-0000-0000-000000000000">
+        <name>Центральный аппарат</name>
+        <location>Москва</location>
+    </org>
+
+    <org oid="00000000-0000-0000-0000-000000000002" parentOrgRef="00000000-0000-0000-0000-000000000001">
+        <name>Финансовый блок</name>
+        <location>Москва</location>
+    </org>
+
+    <org oid="00000000-0000-0000-0000-000000000003" parentOrgRef="00000000-0000-0000-0000-000000000001">
+        <name>Торговый блок</name>
+        <location>Москва</location>
+    </org>
+
+    <org oid="00000000-0000-0000-0000-000000000004" parentOrgRef="00000000-0000-0000-0000-000000000001">
+        <name>Производственный блок</name>
+        <location>Москва</location>
+    </org>
+
+    <org oid="00000000-0000-0000-0000-000000000005" parentOrgRef="00000000-0000-0000-0000-000000000001">
+        <name>Логистический блок</name>
+        <location>Новороссийск</location>
+    </org>
+
+    <!-- Региональные подразделения -->
+    <org oid="00000000-0000-0000-0000-000000000010" parentOrgRef="00000000-0000-0000-0000-000000000004">
+        <name>МЭЗ Краснодар</name>
+        <location>Краснодар</location>
+    </org>
+
+    <org oid="00000000-0000-0000-0000-000000000011" parentOrgRef="00000000-0000-0000-0000-000000000005">
+        <name>Терминал Новороссийск</name>
+        <location>Новороссийск</location>
+    </org>
+
+    <!-- Добавь сюда остальные подразделения, если хочешь — по тому же шаблону -->
+</objects>
