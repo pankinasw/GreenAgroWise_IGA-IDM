@@ -58,10 +58,17 @@ cp .env.example .env
 docker compose up -d
 
 ### Documentation
-Technical Specification
-User Guide
-Administrator Guide
-Architecture & Threat Model
+
+| Document                          | Description                                                      | Link                                                    |
+|-----------------------------------|------------------------------------------------------------------|---------------------------------------------------------|
+| **Technical Specification**       | Full project requirements, functional and non-functional specs   | [`docs/technical-specification.md`](./docs/technical-specification.md) |
+| **User Guide**                    | Step-by-step instructions for employees and approvers            | [`docs/user-guide.md`](./docs/user-guide.md)            |
+| **Administrator Guide**           | Deployment, configuration, maintenance and troubleshooting       | [`docs/admin-guide.md`](./docs/admin-guide.md)          |
+| **Architecture Overview**         | High-level and detailed architecture diagrams (Draw.io source)   | [`docs/architecture.drawio`](./docs/architecture.drawio) |
+| **Threat Model (STRIDE)**         | Security analysis and mitigation matrix                          | [`docs/threat-model-stride.md`](./docs/threat-model-stride.md) |
+| **API Reference**                 | OpenAPI/Swagger spec for backend services                        | [`docs/api/openapi.yaml`](./docs/api/openapi.yaml)      |
+
+All documents are written in Markdown and can be easily exported to PDF.
 
 ### Expansion Capabilities
 ## Integration Potential:
