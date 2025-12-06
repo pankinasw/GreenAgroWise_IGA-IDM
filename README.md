@@ -1,8 +1,16 @@
 ### GreenAgroWise_IGA/IDM 
 
-Project Overview
-Open-source **Identity Governance & Administration** platform designed for large-scale agribusiness enterprises.  
-Provides full lifecycle management of identities and access to 27 corporate systems in compliance with industry best practices and regulatory requirements.
+**Corporate-grade open-source Identity Governance & Administration (IGA) platform**  
+designed for centralized identity and access management in large-scale agribusiness holdings and distributed production environments.
+
+The platform delivers **full-lifecycle identity and access governance** (Joiner–Mover–Leaver), automates request workflows, access recertification, auditing, and supports integration with **27 corporate and government systems**.
+
+СУПД has been engineered from the ground up with strict adherence to:
+- Information security requirements  
+- Corporate compliance policies  
+- Regulatory standards and industry best practices (SOX 404, GDPR, 152-ФЗ, ФСТЭК)
+
+The solution is production-ready for environments with heightened access-control demands, mandatory segregation of duties (SoD), comprehensive action traceability, and seamless regulatory audit preparedness.
 
 ### Key Features
 | Category               | Implementation                                                      |
