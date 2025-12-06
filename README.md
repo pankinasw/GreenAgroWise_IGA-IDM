@@ -25,6 +25,7 @@ graph TD
     E --> F[midPoint 4.8<br/>IGA Core]
     F --> G[PostgreSQL]
     F --> H[27 Target Systems<br/>SCIM / LDAP / REST]
+```
 
 Technology Stack
 Component,Technology,Purpose
