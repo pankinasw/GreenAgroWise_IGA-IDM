@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects xmlns="http://midpoint.evolveum.com/xml/ns/public/common/common-3">
+    <role oid="r001">
+        <name>Администратор домена</name>
+        <description>Полный доступ ко всем 27 системам</description>
+        <requestable>true</requestable>
+        <riskLevel>critical</riskLevel>
+    </role>
+    <role oid="r002">
+        <name>Руководитель направлений</name>
+        <requestable>true</requestable>
+    </role>
+    <role oid="r003">
+        <name>Руководитель блока</name>
+        <requestable>true</requestable>
+    </role>
+    <role oid="r004">
+        <name>Финансовый контролёр</name>
+        <requestable>true</requestable>
+    </role>
+    <role oid="r005">
+        <name>Главный бухгалтер 1С</name>
+        <requestable>true</requestable>
+    </role>
+    <role oid="r006">
+        <name>Коммерческий директор</name>
+        <requestable>true</requestable>
+    </role>
+    <role oid="r007">
+        <name>Директор по закупкам</name>
+        <requestable>true</requestable>
+    </role>
+    <!-- ... ещё 76 ролей по списку из твоего Лист4 ... -->
+    <role oid="r083">
+        <name>Старший лаборант</name>
+        <requestable>true</requestable>
+    </role>
+</objects>
