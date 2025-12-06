@@ -66,7 +66,7 @@ docker compose up -d
 | **Administrator Guide**           | Deployment, configuration, maintenance and troubleshooting       | [`docs/admin-guide.md`](./docs/admin-guide.md)          |
 | **Architecture Overview**         | High-level and detailed architecture diagrams (Draw.io source)   | [`docs/architecture.drawio`](./docs/architecture.drawio) |
 | **Threat Model (STRIDE)**         | Security analysis and mitigation matrix                          | [`docs/threat-model-stride.md`](./docs/threat-model-stride.md) |
-| **API Reference**                 | OpenAPI/Swagger spec for backend services                        | [`docs/api/openapi.yaml`](./docs/api/openapi.yaml)      |
+| **API Reference (OpenAPI 3.0.3, 25+ endpoints)**                 | OpenAPI/Swagger spec for backend services                        | [`docs/api/openapi.yaml`](./docs/api/openapi.yaml)      |
 
 All documents are written in Markdown and can be easily exported to PDF.
 
