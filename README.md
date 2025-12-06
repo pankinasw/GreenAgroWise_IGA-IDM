@@ -1,6 +1,6 @@
 ### GreenAgroWise_IGA/IDM 
 
-# Project Overview
+Project Overview
 Open-source **Identity Governance & Administration** platform designed for large-scale agribusiness enterprises.  
 Provides full lifecycle management of identities and access to 27 corporate systems in compliance with industry best practices and regulatory requirements.
 
