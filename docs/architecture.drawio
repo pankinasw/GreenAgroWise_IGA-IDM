@@ -1,72 +1,58 @@
 <mxfile host="app.diagrams.net">
-  <diagram name="GreenAgroWise IGA/IDM Architecture" id="greenagrowise-iga">
-    <mxGraphModel dx="1416" dy="804" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff">
+  <diagram name="GreenAgroWise IGA/IDM Architecture" id="arch-2025">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-        
-        <!-- Пользователь -->
-        <mxCell value="Пользователь&lt;br/&gt;(Browser / Mobile PWA)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
-          <mxGeometry x="80" y="60" width="60" height="100" as="geometry"/>
+
+        <!-- User -->
+        <mxCell value="Пользователь&lt;br/&gt;Browser / Mobile PWA" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="300" width="60" height="100" as="geometry"/>
         </mxCell>
 
         <!-- Traefik -->
-        <mxCell value="&lt;b&gt;Traefik&lt;/b&gt;&lt;br/&gt;Ingress + TLS" style="shape=cloud;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="280" y="100" width="140" height="80" as="geometry"/>
+        <mxCell value="&lt;b&gt;Traefik&lt;/b&gt;&lt;br/&gt;Ingress + TLS" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#e3f2fd;" vertex="1" parent="1">
+          <mxGeometry x="240" y="320" width="140" height="80" as="geometry"/>
         </mxCell>
 
         <!-- Authentik -->
-        <mxCell value="&lt;b&gt;Authentik 2025&lt;/b&gt;&lt;br/&gt;SSO + MFA + OIDC" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#e1f5fe;" vertex="1" parent="1">
-          <mxGeometry x="480" y="80" width="160" height="100" as="geometry"/>
+        <mxCell value="&lt;b&gt;Authentik 2025&lt;/b&gt;&lt;br/&gt;SSO + MFA + OIDC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5fe;strokeColor=#01579b;" vertex="1" parent="1">
+          <mxGeometry x="460" y="200" width="160" height="100" as="geometry"/>
         </mxCell>
 
         <!-- React Portal -->
-        <mxCell value="&lt;b&gt;React Portal&lt;/b&gt;&lt;br/&gt;Self-service (PWA)" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#e8f5e8;" vertex="1" parent="1">
-          <mxGeometry x="480" y="240" width="160" height="100" as="geometry"/>
+        <mxCell value="&lt;b&gt;React Portal&lt;/b&gt;&lt;br/&gt;Self-service (PWA)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e8;strokeColor=#1b5e20;" vertex="1" parent="1">
+          <mxGeometry x="460" y="360" width="160" height="100" as="geometry"/>
         </mxCell>
 
         <!-- Temporal -->
-        <mxCell value="&lt;b&gt;Temporal.io&lt;/b&gt;&lt;br/&gt;5-stage workflow" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#fff3e0;" vertex="1" parent="1">
-          <mxGeometry x="480" y="400" width="160" height="100" as="geometry"/>
+        <mxCell value="&lt;b&gt;Temporal.io&lt;/b&gt;&lt;br/&gt;5-stage workflow" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;" vertex="1" parent="1">
+          <mxGeometry x="460" y="520" width="160" height="100" as="geometry"/>
         </mxCell>
 
         <!-- midPoint -->
-        <mxCell value="&lt;b&gt;midPoint 4.8&lt;/b&gt;&lt;br/&gt;IGA Core + SoD + Recertification" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#fce4ec;" vertex="1" parent="1">
-          <mxGeometry x="720" y="280" width="180" height="120" as="geometry"/>
+        <mxCell value="&lt;b&gt;midPoint 4.8&lt;/b&gt;&lt;br/&gt;IGA Core + SoD + Recert" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#880e4f;" vertex="1" parent="1">
+          <mxGeometry x="720" y="340" width="180" height="120" as="geometry"/>
         </mxCell>
 
         <!-- PostgreSQL -->
-        <mxCell value="PostgreSQL 16" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
-          <mxGeometry x="760" y="480" width="100" height="120" as="geometry"/>
+        <mxCell value="PostgreSQL 16" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e0e0e0;" vertex="1" parent="1">
+          <mxGeometry x="760" y="520" width="100" height="120" as="geometry"/>
         </mxCell>
 
         <!-- Target Systems -->
-        <mxCell value="27 Target Systems&lt;br/&gt;SAP • 1C • M365 • ФГИС Зерно • ServiceNow" style="shape=folder;whiteSpace=wrap;html=1;fillColor=#f3e5f5;" vertex="1" parent="1">
-          <mxGeometry x="960" y="300" width="200" height="140" as="geometry"/>
+        <mxCell value="27 Target Systems&lt;br/&gt;SAP • 1C • M365 • ФГИС • ServiceNow" style="shape=folder;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#4a148c;" vertex="1" parent="1">
+          <mxGeometry x="980" y="340" width="200" height="140" as="geometry"/>
         </mxCell>
 
-        <!-- Стрелки -->
-        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="1" target="2">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="2" target="3">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="3" target="4">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="4" target="5">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="5" target="6">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="6" target="7">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="5" target="8">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
+        <!-- Arrows -->
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="1" target="2"/>
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="2" target="3"/>
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="3" target="4"/>
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="4" target="5"/>
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="5" target="6"/>
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="6" target="7"/>
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;" edge="1" parent="1" source="6" target="8"/>
       </root>
     </mxGraphModel>
   </diagram>
