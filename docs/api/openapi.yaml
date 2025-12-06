@@ -1,0 +1,325 @@
+openapi: 3.0.3
+info:
+  title: СУПД — Система управления правами доступа
+  description: |
+    REST API бэкенда системы IGA/IDM (midPoint + Temporal + Authentik).
+    Поддерживает создание заявок, workflow-согласование, ресертификацию, аудит и интеграцию с внешними системами.
+    Все операции защищены JWT (OIDC от Authentik).
+  version: 1.0.0
+  contact:
+    name: Департамент информационной безопасности
+    email: security@company.ru
+  license:
+    name: Proprietary (internal use only)
+
+servers:
+  - url: https://iga.company.ru/api/v1
+    description: Продуктивный контур
+  - url: https://iga-test.company.ru/api/v1
+    description: Тестовый контур
+
+security:
+  - bearerAuth: []
+
+paths:
+  # ==================== ЗАЯВКИ ====================
+  /requests:
+    post:
+      summary: Создать заявку на доступ
+      operationId: createAccessRequest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccessRequestCreate'
+      responses:
+        '202':
+          description: Заявка принята и отправлена в workflow
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestCreatedResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /requests/{requestId}:
+    get:
+      summary: Получить заявку по ID
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      responses:
+        '200':
+          description: Информация о заявке
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestDetail'
+
+  /requests/{requestId}/approve:
+    post:
+      summary: Согласовать заявку (для согласующего)
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovalAction'
+      responses:
+        '200':
+          description: Заявка согласована
+        '403':
+          description: Нет прав на согласование
+
+  /requests/{requestId}/reject:
+    post:
+      summary: Отклонить заявку
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        $ref: '#/components/requestBodies/RejectionReason'
+      responses:
+        '200':
+          description: Заявка отклонена
+
+  # ==================== ПОЛЬЗОВАТЕЛИ ====================
+  /users/{userId}:
+    get:
+      summary: Получить карточку пользователя
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Полная карточка сотрудника
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetail'
+
+  /users/{userId}/roles:
+    get:
+      summary: Получить роли пользователя по всем системам
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Список назначенных ролей
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserRole'
+
+  # ==================== РЕСЕРТИФИКАЦИЯ ====================
+  /campaigns:
+    get:
+      summary: Список активных кампаний ресертификации
+      responses:
+        '200':
+          description: Список кампаний
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CertificationCampaign'
+
+  /campaigns/{campaignId}/tasks:
+    get:
+      summary: Задачи текущего пользователя в кампании
+      parameters:
+        - $ref: '#/components/parameters/CampaignId'
+      responses:
+        '200':
+          description: Задачи на подтверждение/отзыв
+
+  # ==================== АУДИТ И ОТЧЁТЫ ====================
+  /audit/events:
+    get:
+      summary: Журнал аудита (фильтрация)
+      parameters:
+        - in: query
+          name: userId
+          schema:
+            type: string
+        - in: query
+          name: from
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: to
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: События аудита
+
+  /reports/sod-conflicts:
+    get:
+      summary: Реестр текущих SoD-конфликтов
+      responses:
+        '200':
+          description: Список конфликтов разделения обязанностей
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT-токен от Authentik (scopes: openid profile email)
+
+  parameters:
+    RequestId:
+      name: requestId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    UserId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+        example: "emp-123456"
+    CampaignId:
+      name: campaignId
+      in: path
+      required: true
+      schema:
+        type: integer
+
+  schemas:
+    AccessRequestCreate:
+      type: object
+      required: [userId, items]
+      properties:
+        userId:
+          type: string
+          description: Табельный номер или UUID сотрудника
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              roleId:
+                type: string
+              system:
+                type: string
+                enum: [SAP, ONE_C, M365, SERVICENOW, FGIS_ZERNO]
+              durationDays:
+                type: integer
+                minimum: 1
+                maximum: 365
+              justification:
+                type: string
+                maxLength: 1000
+
+    RequestCreatedResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [PENDING, IN_PROGRESS, APPROVED, REJECTED, EXECUTED]
+        createdAt:
+          type: string
+          format: date-time
+
+    ApprovalAction:
+      type: object
+      required: [decision]
+      properties:
+        decision:
+          type: string
+          enum: [APPROVE, REJECT]
+        comment:
+          type: string
+          maxLength: 500
+
+    UserDetail:
+      type: object
+      properties:
+        id:
+          type: string
+        fullName:
+          type: string
+        department:
+          type: string
+        position:
+          type: string
+        employmentStatus:
+          type: string
+          enum: [ACTIVE, FIRED, VACATION, SUSPENDED]
+
+    UserRole:
+      type: object
+      properties:
+        roleId:
+          type: string
+        roleName:
+          type: string
+        system:
+          type: string
+        assignedAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    CertificationCampaign:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: "Q4 2025 — Ежеквартальная ресертификация"
+        deadline:
+          type: string
+          format: date-time
+        progress:
+          type: number
+          minimum: 0
+          maximum: 100
+
+  responses:
+    BadRequest:
+      description: Неверный формат запроса
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    Unauthorized:
+      description: Отсутствует или недействителен JWT-токен
+
+  requestBodies:
+    RejectionReason:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [reason]
+            properties:
+              reason:
+                type: string
+                maxLength: 1000
