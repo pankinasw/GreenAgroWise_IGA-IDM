@@ -40,12 +40,16 @@ graph TD
 
 
 
-### Use Cases
-|Automated onboarding with birthright access in < 24 hours|
-|Multi-level access requests to restricted systems (e.g., SAP, OpenLink Endur)|
-|Quarterly access recertification with automatic revocation|
-|Self-service password reset and role requests|
-|Full audit trail for SOX/GDPR/152-ФЗ compliance|
+### Use Cases — Real-World Scenarios
+
+| # | Scenario                                                    | How it works in GreenAgroWise IGA/IDM                                                                                         | Business Impact                                      |
+|---|------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
+| 1 | **Automated employee onboarding**                          | New hire appears in 1C HR → automatic sync → midPoint creates account and assigns birthright roles (M365, 1C, corporate email) within 1 hour | New employee is fully productive on day one          |
+| 2 | **Multi-level access request to restricted systems**       | User requests “Trader” role in OpenLink Endur or “Chief Accountant 1C” → 5-stage workflow starts: line manager → company security → holding security → system owner → automatic SCIM/LDAP provisioning | Zero unauthorized access, full approval audit trail  |
+| 3 | **Quarterly access recertification**                       | midPoint automatically launches campaign → managers receive list of subordinates and their roles → confirm/revoke via portal → expired roles auto-revoked after 14 days | 100 % coverage, zero “ghost” accounts                |
+| 4 | **Employee self-service**                                  | Users can independently: <br>• request temporary/project access <br>• reset password <br>• view current roles & history <br>• delegate rights during vacation | 5–10× reduction of IT & security team workload       |
+| 5 | **Incident response – compromised account**                 | Suspicious activity detected (Wazuh/Temporal) → immediate block in Authentik + revocation of all sessions & tokens → security team notified | Response time < 15 minutes, damage minimized         |
+| 6 | **Audit & regulatory reporting**                            | Generate ready-to-use reports in 2 minutes: <br>• SoD conflict registry <br>• Full executive access list <br>• Change history per quarter | Instant readiness for SOX 404, GDPR, 152-FZ, FSTEC audits |
 
 ### Quick Start
 git clone https://github.com/pankinasw/GreenAgroWise_IGA-IDM.git
