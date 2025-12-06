@@ -1,0 +1,127 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: iam
+      POSTGRES_PASSWORD: SuperSecret2025!
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin2025
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+
+  authentik-postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: authentik
+      POSTGRES_USER: authentik
+      POSTGRES_PASSWORD: AuthentikSecret2025!
+    volumes:
+      - authentik_pg:/var/lib/postgresql/data
+
+  authentik-redis:
+    image: redis:alpine
+    restart: unless-stopped
+
+  authentik:
+    image: ghcr.io/goauthentik/server:latest
+    restart: unless-stopped
+    command: server
+    environment:
+      AUTHENTIK_SECRET_KEY: SuperLongRandomKey2025ChangeMe!
+      AUTHENTIK_REDIS__HOST: authentik-redis
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgres
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: AuthentikSecret2025!
+      AUTHENTIK_ERROR_REPORTING__ENABLED: "false"
+    ports:
+      - "9000:9000"
+      - "9443:9443"
+    volumes:
+      - ./authentik/media:/media
+      - ./authentik/custom-templates:/templates
+    depends_on:
+      - authentik-postgres
+      - authentik-redis
+
+  midpoint:
+    image: evolveum/midpoint:4.8.3
+    container_name: midpoint
+    restart: unless-stopped
+    environment:
+      MP_SET_midpoint_repository_jdbcUrl: jdbc:postgresql://postgres:5432/keycloak
+      MP_SET_midpoint_repository_jdbcUsername: iam
+      MP_SET_midpoint_repository_jdbcPassword: SuperSecret2025!
+      MP_MEM_MAX: "4g"
+      MP_MEM_INIT: "2g"
+    ports:
+      - "8443:443"
+    volumes:
+      - ./midpoint/var:/opt/midpoint/var
+    depends_on:
+      - postgres
+
+  temporal:
+    image: temporalio/auto-setup:1.latest
+    environment:
+      - DB=postgresql
+      - DB_PORT=5432
+      - POSTGRES_SEEDS=postgres
+      - POSTGRES_USER=iam
+      - POSTGRES_PWD=SuperSecret2025!
+      - POSTGRES_DB=temporal
+    ports:
+      - "7233:7233"
+    depends_on:
+      - postgres
+
+  temporal-ui:
+    image: temporalio/web:latest
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+    ports:
+      - "8088:8080"
+
+  portal:
+    image: node:20-alpine
+    working_dir: /app
+    container_name: react-portal
+    command: sh -c "npm install && npm run dev"
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin2025
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  postgres_data:
+  minio_data:
+  authentik_pg:
+  grafana_data:
