@@ -58,19 +58,19 @@ Architecture & Threat Model
 
 ### Expansion Capabilities
 ## Integration Potential:
-* # FGIS Mercury Integration** - possibility to connect to the Federal State Information System Mercury for traceability and control of food products
-* # Marking System Integration** - support for "Cheстный ЗНАК" (Honest MARK) system for product marking and tracking
-* # Government Systems Integration** - compatibility with other state information systems for data exchange and compliance
+*  FGIS Mercury Integration** - possibility to connect to the Federal State Information System Mercury for traceability and control of food products
+*  Marking System Integration** - support for "Cheстный ЗНАК" (Honest MARK) system for product marking and tracking
+*  Government Systems Integration** - compatibility with other state information systems for data exchange and compliance
 
 ## Security Analytics:
-* # User Behavior Analytics (UBA)** implementation for monitoring and analyzing user activity patterns
-* # Anomaly Detection** system to track unusual user behavior
-* # Proactive Threat Detection** mechanisms to identify potential security incidents in advance
+* User Behavior Analytics (UBA)** implementation for monitoring and analyzing user activity patterns
+* Anomaly Detection** system to track unusual user behavior
+* Proactive Threat Detection** mechanisms to identify potential security incidents in advance
 
 ## Cryptographic Protection:
-* # CryptoPro CSP Support** integration for enhanced cryptographic security
-* # GOST Algorithms Implementation** for compliance with Russian cryptographic standards
-* # Advanced Data Protection** measures to ensure secure data storage and transmission
+* CryptoPro CSP Support** integration for enhanced cryptographic security
+* GOST Algorithms Implementation** for compliance with Russian cryptographic standards
+* Advanced Data Protection** measures to ensure secure data storage and transmission
 
 These capabilities can be integrated into the system as additional modules, providing flexibility for future development and customization according to specific project requirements.
 
