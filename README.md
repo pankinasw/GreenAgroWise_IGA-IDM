@@ -41,11 +41,11 @@ graph TD
 
 
 ### Use Cases
-Automated onboarding with birthright access in < 24 hours |
-Multi-level access requests to restricted systems (e.g., SAP, OpenLink Endur) |
-Quarterly access recertification with automatic revocation |
-Self-service password reset and role requests |
-Full audit trail for SOX/GDPR/152-ФЗ compliance |
+|Automated onboarding with birthright access in < 24 hours|
+|Multi-level access requests to restricted systems (e.g., SAP, OpenLink Endur)|
+|Quarterly access recertification with automatic revocation|
+|Self-service password reset and role requests|
+|Full audit trail for SOX/GDPR/152-ФЗ compliance|
 
 ### Quick Start
 git clone https://github.com/pankinasw/GreenAgroWise_IGA-IDM.git
