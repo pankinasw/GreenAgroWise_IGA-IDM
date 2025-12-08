@@ -1,0 +1,44 @@
+# .github/workflows/pdf.yml
+name: Generate PDF Docs
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/*.md'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Pandoc + wkhtmltopdf
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y pandoc wkhtmltopdf
+
+      - name: Generate PDFs
+        run: |
+          for file in docs/*.md; do
+            name=$(basename "$file" .md)
+            echo "Generating $name.pdf"
+            pandoc "$file" \
+              -o "docs/$name.pdf" \
+              --pdf-engine=wkhtmltopdf \
+              -V margin-top=1.5cm \
+              -V margin-bottom=1.5cm \
+              -V margin-left=2cm \
+              -V margin-right=2cm \
+              --highlight-style=tango
+          done
+
+      - name: Commit & Push PDFs
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: auto-generate PDF versions"
+          file_pattern: docs/*.pdf
