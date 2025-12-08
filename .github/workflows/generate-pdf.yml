@@ -34,7 +34,7 @@ jobs:
         run: |
           for file in docs/*.md; do
             filename=$(basename "$file" .md)
-            echo "Generating $filename.pdf"
+            echo "Generating $filename.pdf from $file"
             weasyprint "$file" "docs/$filename.pdf"
           done
 
