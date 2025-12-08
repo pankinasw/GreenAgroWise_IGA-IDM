@@ -1,47 +1,44 @@
-# .github/workflows/generate-pdf.yml
-name: Generate PDF Documentation
+name: Generate PDF Docs
 
 on:
   push:
     branches: [ main ]
     paths:
-      - 'docs/*.md'                     # запускается только при изменении Markdown-документов
-  workflow_dispatch:                    # можно запустить вручную кнопкой
+      - 'docs/*.md'
+  workflow_dispatch:
 
 jobs:
-  convert-to-pdf:
+  generate-pdf:
     runs-on: ubuntu-latest
     permissions:
-      contents: write                        # нужно, чтобы Action мог делать commit
+      contents: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Pandoc + wkhtmltopdf
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install WeasyPrint dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y pandoc wkhtmltopdf
+          sudo apt-get install -y build-essential python3-dev python3-pip libcairo2-dev libpango1.0-dev libgdk-pixbuf2.0-dev libffi-dev shared-mime-info
 
-      - name: Generate PDFs from Markdown
+      - name: Install WeasyPrint
+        run: pip install weasyprint
+
+      - name: Generate PDFs
         run: |
-          mkdir -p docs/pdf
-          
-          # Генерируем PDF для каждого .md файла
           for file in docs/*.md; do
             filename=$(basename "$file" .md)
-            echo "→ Converting $filename.md → $filename.pdf"
-            pandoc "$file" \
-              -o "docs/$filename.pdf" \
-              --pdf-engine=wkhtmltopdf \
-              -V margin-top=1.5cm \
-              -V margin-bottom=1.5cm \
-              -V margin-left=2cm \
-              -V margin-right=2cm \
-              --highlight-style=tango
+            echo "Generating $filename.pdf"
+            weasyprint "$file" "docs/$filename.pdf"
           done
 
-      - name: Commit & Push generated PDFs
+      - name: Commit generated PDFs
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "docs: auto-generate PDF versions"
