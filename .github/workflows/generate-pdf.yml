@@ -1,0 +1,18 @@
+name: Generate PDF Docs
+on: [push, pull_request]
+jobs:
+  pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Pandoc
+        run: sudo apt-get update && sudo apt-get install pandoc
+      - name: Generate PDFs
+        run: |
+          pandoc docs/technical-specification.md -o docs/technical-specification.pdf --pdf-engine=wkhtmltopdf
+          pandoc docs/user-guide.md -o docs/user-guide.pdf --pdf-engine=wkhtmltopdf
+          # Добавь остальные файлы
+      - name: Commit PDFs
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Update PDF docs"
