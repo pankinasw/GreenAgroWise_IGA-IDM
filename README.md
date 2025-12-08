@@ -21,7 +21,7 @@ The solution is production-ready for environments with heightened access-control
 | Recertification        | Quarterly access review campaigns with auto-revocation              |
 | Self-Service Portal    | Desktop + Mobile PWA (React + Material-UI)                          |
 | Integrations           | 27 systems: SAP S/4HANA, 1C, Microsoft 365, ФГИС Зерно, ServiceNow |
-| Compliance             | SOX 404, GDPR, 152-ФЗ (Russia), FSTEC audit ready                   |
+| Compliance             | SOX 404, GDPR, 152-ФЗ (Russia), ФСТЭК audit ready                   |
 
  ### System Architecture
 ```mermaid
@@ -57,7 +57,7 @@ graph TD
 | 3 | **Quarterly access recertification**                       | midPoint automatically launches campaign → managers receive list of subordinates and their roles → confirm/revoke via portal → expired roles auto-revoked after 14 days | 100 % coverage, zero “ghost” accounts                |
 | 4 | **Employee self-service**                                  | Users can independently: <br>• request temporary/project access <br>• password Reset Request Creation (executed by IT service) <br>• view current roles & history <br>• delegate rights during vacation | 5–10× reduction of IT & security team workload       |
 | 5 | **Incident response – compromised account**                 | Suspicious activity detected (Wazuh/Temporal) → immediate block in Authentik + revocation of all sessions & tokens → security team notified | Response time < 15 minutes, damage minimized         |
-| 6 | **Audit & regulatory reporting**                            | Generate ready-to-use reports in 2 minutes: <br>• SoD conflict registry <br>• Full executive access list <br>• Change history per quarter | Instant readiness for SOX 404, GDPR, 152-FZ, FSTEC audits |
+| 6 | **Audit & regulatory reporting**                            | Generate ready-to-use reports in 2 minutes: <br>• SoD conflict registry <br>• Full executive access list <br>• Change history per quarter | Instant readiness for SOX 404, GDPR, 152-ФЗ, ФСТЭК audits |
 
 ### Quick Start
 git clone https://github.com/pankinasw/GreenAgroWise_IGA-IDM.git
@@ -80,8 +80,8 @@ All documents are written in Markdown and can be easily exported to PDF.
 
 ### Expansion Capabilities
 ## Integration Potential:
-*  FGIS Mercury Integration** - possibility to connect to the Federal State Information System Mercury for traceability and control of food products
-*  Marking System Integration** - support for "Cheстный ЗНАК" (Honest MARK) system for product marking and tracking
+*  ФГИС Mercury Integration** - possibility to connect to the Federal State Information System Mercury for traceability and control of food products
+*  Marking System Integration** - support for "Честный ЗНАК" (Honest MARK) system for product marking and tracking
 *  Government Systems Integration** - compatibility with other state information systems for data exchange and compliance
 
 ## Security Analytics:
