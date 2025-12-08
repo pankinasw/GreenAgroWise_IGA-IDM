@@ -1,18 +1,49 @@
-name: Generate PDF Docs
-on: [push, pull_request]
+# .github/workflows/generate-pdf.yml
+name: Generate PDF Documentation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/*.md'                     # запускается только при изменении Markdown-документов
+  workflow_dispatch:                    # можно запустить вручную кнопкой
+
 jobs:
-  pdf:
+  convert-to-pdf:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write                        # нужно, чтобы Action мог делать commit
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Install Pandoc
-        run: sudo apt-get update && sudo apt-get install pandoc
-      - name: Generate PDFs
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Pandoc + wkhtmltopdf
         run: |
-          pandoc docs/technical-specification.md -o docs/technical-specification.pdf --pdf-engine=wkhtmltopdf
-          pandoc docs/user-guide.md -o docs/user-guide.pdf --pdf-engine=wkhtmltopdf
-          # Добавь остальные файлы
-      - name: Commit PDFs
-        uses: stefanzweifel/git-auto-commit-action@v4
+          sudo apt-get update
+          sudo apt-get install -y pandoc wkhtmltopdf
+
+      - name: Generate PDFs from Markdown
+        run: |
+          mkdir -p docs/pdf
+          
+          # Генерируем PDF для каждого .md файла
+          for file in docs/*.md; do
+            filename=$(basename "$file" .md)
+            echo "→ Converting $filename.md → $filename.pdf"
+            pandoc "$file" \
+              -o "docs/$filename.pdf" \
+              --pdf-engine=wkhtmltopdf \
+              -V margin-top=1.5cm \
+              -V margin-bottom=1.5cm \
+              -V margin-left=2cm \
+              -V margin-right=2cm \
+              --highlight-style=tango
+          done
+
+      - name: Commit & Push generated PDFs
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update PDF docs"
+          commit_message: "docs: auto-generate PDF versions"
+          file_pattern: docs/*.pdf
+          branch: main
